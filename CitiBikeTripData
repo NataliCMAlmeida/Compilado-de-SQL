@@ -1,0 +1,59 @@
+SELECT *
+from CitiBikeTripData;
+
+ALTER TABLE CitiBikeTripData
+ADD COLUMN Data DATE;
+
+ALTER TABLE CitiBikeTripData
+ADD COLUMN Hora TIME;
+
+ALTER TABLE CitiBikeTripData
+RENAME COLUMN hora TO horario_saida;
+
+UPDATE CitiBikeTripData
+SET
+    Data = DATE(starttime),
+    horario_saida = TIME(starttime);
+    
+UPDATE CitiBikeTripData
+SET starttime = '2017-09-01 00:10:02'
+WHERE starttime = '2017-09-01 0:10:02';
+    
+ALTER TABLE CitiBikeTripData
+ADD COLUMN horario_chegada TIME;
+
+UPDATE CitiBikeTripData
+SET
+	horario_chegada = TIME(stoptime);
+    
+ALTER TABLE CitiBikeTripData
+DROP COLUMN starttime;
+
+ALTER TABLE CitiBikeTripData
+DROP COLUMN stoptime;
+
+SELECT
+    COALESCE(CAST(birth_year AS TEXT), 'Desconhecido')
+FROM CitiBikeTripData;
+
+UPDATE CitiBikeTripData
+SET birth_year = COALESCE(CAST(birth_year AS TEXT), 'Desconhecido')
+WHERE birth_year IS NULL;
+
+SELECT
+    horario_saida,
+    horario_chegada,
+    (STRFTIME('%s', horario_chegada) - STRFTIME('%s', horario_saida)) AS Duracao_segundos
+FROM
+    CitiBikeTripData;
+    
+SELECT3
+    horario_saida,
+    horario_chegada,
+    (STRFTIME('%s', horario_chegada) - STRFTIME('%s', horario_saida)) / 60 AS Duracao_minutos
+FROM
+    CitiBikeTripData;
+    
+SELECT
+    start_station_name || ' para ' || end_station_name AS Trajeto
+FROM CitiBikeTripData;
